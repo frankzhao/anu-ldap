@@ -39,10 +39,18 @@ module AnuLdap
   #
   # Returns _true_ if authentication is successful, and _false_ otherwise.
   def self.authenticate(uni_id, password)
-    ldap = get_new_ldap()
-    ldap.auth "uid=#{uni_id}, ou=people, o=anu.edu.au", password
+    if (password.nil?) || (password.empty?)
+      return false
+    else
+      ldap = get_new_ldap()
+      ldap.auth "uid=#{uni_id}, ou=people, o=anu.edu.au", password
 
-    ldap.bind
+      begin
+        ldap.bind
+      rescue
+        return false
+      end
+    end
   end
 
   private
